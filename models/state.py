@@ -21,9 +21,7 @@ class State(BaseModel, Base):
         cities = relationship('City', backref='state', cascade='all, delete')
 
     # For FileStorage
-    elif db == 'file':
-        name = ""
-
+    else:
         @property
         def cities(self):
             """Returns """
