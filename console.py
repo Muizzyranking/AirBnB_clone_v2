@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+# #!/usr/bin/env python3
 """ Console Module """
 import cmd
 import sys
@@ -131,6 +132,7 @@ class HBNBCommand(cmd.Cmd):
             setattr(new_instance, k, v)
 
         print(new_instance.id)
+        storage.new(new_instance)
         storage.save()
         return
 
