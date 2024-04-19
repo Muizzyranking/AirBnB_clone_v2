@@ -12,6 +12,7 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 from utils.helper import process_parameters
+from models.engine.db_storage import DBStorage
 
 
 class HBNBCommand(cmd.Cmd):
@@ -127,7 +128,12 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return
 
-        new_instance = HBNBCommand.classes[class_name]()
+        if isinstance(storage, DBStorage):
+            cls = HBNBCommand.classes[class_name]
+            new_instance = cls()
+        else:
+            new_instance = HBNBCommand.classes[class_name]()
+
         for k, v in process_parameters(args_list[1:]).items():
             setattr(new_instance, k, v)
 
@@ -216,12 +222,15 @@ class HBNBCommand(cmd.Cmd):
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage._FileStorage__objects.items():
-                if k.split('.')[0] == args:
-                    print_list.append(str(v))
+            # Retrieve all objects of the specified class from the database
+            objects = storage.all(args)
+            for obj in objects.values():
+                print_list.append(str(obj))
         else:
-            for k, v in storage._FileStorage__objects.items():
-                print_list.append(str(v))
+            # Retrieve all objects from the database
+            objects = storage.all()
+            for obj in objects.values():
+                print_list.append(str(obj))
 
         print(print_list)
 
