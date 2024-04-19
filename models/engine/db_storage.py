@@ -10,17 +10,8 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 
-user = getenv('HBNB_MYSQL_USER')
-pwd = getenv('HBNB_MYSQL_PWD')
-host = getenv('HBNB_MYSQL_HOST')
-db = getenv('HBNB_MYSQL_DB')
-
-
-classes = {
-    'BaseModel': BaseModel, 'User': User, 'Place': Place,
-    'State': State, 'City': City, 'Amenity': Amenity,
-    'Review': Review
-}
+classes = {"User": User, "State": State, "City": City,
+           "Amenity": Amenity, "Place": Place, "Review": Review}
 
 
 class DBStorage:
@@ -29,25 +20,34 @@ class DBStorage:
     __session = None
 
     def __init__(self):
-        """Initializes a new instance of DBStorage"""
-        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'
-                                      .format(user, pwd, host, db),
-                                      pool_pre_ping=True)
-        if getenv('HBNB_ENV') == 'test':
+        HBNB_MYSQL_USER = getenv('HBNB_MYSQL_USER')
+        HBNB_MYSQL_PWD = getenv('HBNB_MYSQL_PWD')
+        HBNB_MYSQL_HOST = getenv('HBNB_MYSQL_HOST')
+        HBNB_MYSQL_DB = getenv('HBNB_MYSQL_DB')
+        """initializer for DBStorage"""
+
+        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(
+            HBNB_MYSQL_USER,
+            HBNB_MYSQL_PWD,
+            HBNB_MYSQL_HOST,
+            HBNB_MYSQL_DB), pool_pre_ping=True)
+        env = getenv("HBNB_ENV")
+        if (env == "test"):
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """Returns a dictionary of models currently in storage"""
-        temp = {}
-        table = [User, Place, State, City, Amenity, Review]
-        if cls is not None:
-            for key, val in self.__session.query(classes[cls]).all():
-                temp[key] = val
+
+        dct = {}
+        if cls is None:
+            for c in classes.values():
+                for obj in self.__session.query(c).all():
+                    key = obj.__class__.__name__ + '.' + obj.id
+                    dct[key] = obj
         else:
-            for clss in table:
-                for key, val in self.__session.query(clss).all():
-                    temp[key] = val
-        return temp
+            for obj in self.__session.query(cls).all():
+                key = obj.__class__.__name__ + '.' + obj.id
+                dct[key] = obj
+        return dct
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
