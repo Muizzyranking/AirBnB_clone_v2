@@ -32,7 +32,7 @@ sudo ln -s /data/web_static/releases/test /data/web_static/current
 
 # check if the config exsits before adding
 # if ! grep -q "location /hbnb_static" /etc/nginx/sites-available/default; then
-# 	sudo sed -i '/add_header X-Served-By \$hostname;/a \\n\t location /hbnb_static \n\t{\n\t\talias /data/web_static/current/;\n\t}' /etc/nginx/sites-enabled/default
+# 	sudo sed -i '/add_header X-Served-By \$hostname;/a \t location /hbnb_static \n\t{\n\t\talias /data/web_static/current/;\n\t}' /etc/nginx/sites-enabled/default
 # fi
 sudo sed -i '/listen 80 default_server/a location /hbnb_static { alias /data/web_static/current/; }' /etc/nginx/sites-enabled/default
 sudo service nginx restart
