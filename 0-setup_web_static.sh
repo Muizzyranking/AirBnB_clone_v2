@@ -4,8 +4,8 @@
 # install nginx if not installed
 if ! which nginx >/dev/null 2>&1; then
 	echo "Installing Nginx..."
-	sudo apt-get update -y -q
-	sudo apt-get install nginx -y -q
+	sudo apt-get update -y
+	sudo apt-get install nginx -y
 fi
 
 # create folder if it doesn't exist
@@ -31,8 +31,8 @@ fi
 sudo ln -s /data/web_static/releases/test /data/web_static/current
 
 # check if the config exsits before adding
-if ! grep -q "location /hbnb_static" /etc/nginx/sites-available/default; then
-    sudo sed -i '/add_header X-Served-By \$hostname;/a \\n\t location /hbnb_static \n\t{\n\t\talias /data/web_static/current/;\n\t}' /etc/nginx/sites-enabled/default
-fi
+# if ! grep -q "location /hbnb_static" /etc/nginx/sites-available/default; then
+# 	sudo sed -i '/add_header X-Served-By \$hostname;/a \\n\t location /hbnb_static \n\t{\n\t\talias /data/web_static/current/;\n\t}' /etc/nginx/sites-enabled/default
+# fi
 
 sudo service nginx restart
