@@ -35,4 +35,3 @@ def do_clean(number=0):
     remote_archives = remote_archives.split()
     for archive in remote_archives[number:]:
         run("rm -rf /data/web_static/releases/{}".format(archive))
-
